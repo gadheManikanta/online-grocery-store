@@ -1,0 +1,699 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FreshCart - Online Grocery Store</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+
+        /* =====================================
+           THIRD-PARTY API SECTION
+        ===================================== */
+
+        .external-api-section {
+            padding: 60px 8%;
+            background: #f4fff5;
+        }
+
+        .external-api-heading {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .external-api-heading p {
+            color: #28a745;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .external-api-heading h2 {
+            font-size: 30px;
+            color: #222;
+            margin-bottom: 10px;
+        }
+
+        .external-api-heading span {
+            color: #666;
+        }
+
+        .external-product-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 22px;
+            margin-top: 30px;
+        }
+
+        .external-product-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            transition: 0.3s;
+            overflow: hidden;
+        }
+
+        .external-product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .external-product-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: contain;
+            margin-bottom: 12px;
+        }
+
+        .external-product-card h3 {
+            font-size: 17px;
+            margin-bottom: 8px;
+        }
+
+        .external-product-card p {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .external-product-price {
+            color: #159447;
+            font-size: 19px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .external-product-card small {
+            display: block;
+            color: #777;
+            margin-top: 8px;
+        }
+
+        .external-api-message {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            grid-column: 1 / -1;
+        }
+
+        /* MOBILE RESPONSIVENESS */
+
+        @media (max-width: 600px) {
+
+            .external-api-section {
+                padding: 40px 5%;
+            }
+
+            .external-api-heading h2 {
+                font-size: 24px;
+            }
+
+            .external-product-container {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+            }
+
+            .external-product-card {
+                padding: 10px;
+            }
+
+            .external-product-card img {
+                height: 120px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================
+     HEADER
+===================================== -->
+
+<header class="header">
+
+    <div class="navbar">
+
+        <div class="logo">
+            🛒 <span>FreshCart</span>
+        </div>
+
+        <nav>
+
+            <a href="#home">Home</a>
+
+            <a href="#products">Products</a>
+
+            <a href="#externalProductsSection">Explore More</a>
+
+            <a href="#categories">Categories</a>
+
+            <a href="#offers">Offers</a>
+
+            <a href="#contact">Contact</a>
+
+            <a href="order-tracking.html">
+                📦 Track Order
+            </a>
+
+        </nav>
+
+        <button
+            class="cart-button"
+            onclick="openCart()">
+
+            🛒 Cart
+
+            <span id="cartCount">0</span>
+
+        </button>
+
+    </div>
+
+</header>
+
+
+
+<!-- =====================================
+     HERO SECTION
+===================================== -->
+
+<section id="home" class="hero">
+
+    <div class="hero-content">
+
+        <p class="small-title">
+            🥬 100% Fresh & Healthy
+        </p>
+
+        <h1>
+
+            Fresh Groceries (AYYAPPA FRESH STORE)
+
+            <br>
+
+            Delivered To Your Door
+
+        </h1>
+
+        <p class="hero-text">
+
+            Shop fresh fruits, vegetables,
+            dairy products, snacks and daily
+            essentials at affordable prices.
+
+        </p>
+
+        <button
+            class="shop-button"
+            onclick="goToProducts()">
+
+            Shop Now 🛒
+
+        </button>
+
+    </div>
+
+
+    <div class="hero-emoji">
+
+        🥦 🍎
+
+        <br>
+
+        🥕 🥛
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================
+     SEARCH SECTION
+===================================== -->
+
+<section class="search-section">
+
+    <div class="search-box">
+
+        <span>🔍</span>
+
+        <input
+            type="text"
+            id="searchBox"
+            placeholder="Search for fruits, vegetables, milk, snacks..."
+            onkeyup="searchProducts()"
+        >
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================
+     CATEGORIES SECTION
+===================================== -->
+
+<section
+    id="categories"
+    class="categories-section">
+
+    <div class="section-title">
+
+        <p>EXPLORE</p>
+
+        <h2>Shop By Category</h2>
+
+    </div>
+
+
+    <div class="category-container">
+
+
+        <button
+            class="category-card"
+            onclick="filterProducts('all')">
+
+            <div class="category-icon all-icon">
+                🛍️
+            </div>
+
+            <h3>All Products</h3>
+
+            <p>View All</p>
+
+        </button>
+
+
+        <button
+            class="category-card"
+            onclick="filterProducts('fruits')">
+
+            <div class="category-icon fruit-icon">
+                🍎
+            </div>
+
+            <h3>Fresh Fruits</h3>
+
+            <p>10+ Products</p>
+
+        </button>
+
+
+        <button
+            class="category-card"
+            onclick="filterProducts('vegetables')">
+
+            <div class="category-icon vegetable-icon">
+                🥦
+            </div>
+
+            <h3>Vegetables</h3>
+
+            <p>15+ Products</p>
+
+        </button>
+
+
+        <button
+            class="category-card"
+            onclick="filterProducts('dairy')">
+
+            <div class="category-icon dairy-icon">
+                🥛
+            </div>
+
+            <h3>Dairy Products</h3>
+
+            <p>8+ Products</p>
+
+        </button>
+
+
+        <button
+            class="category-card"
+            onclick="filterProducts('snacks')">
+
+            <div class="category-icon snack-icon">
+                🍪
+            </div>
+
+            <h3>Snacks</h3>
+
+            <p>12+ Products</p>
+
+        </button>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================
+     MONGODB PRODUCTS SECTION
+===================================== -->
+
+<section
+    id="products"
+    class="products-section">
+
+
+    <div class="section-heading">
+
+        <div>
+
+            <p>FRESH PRODUCTS</p>
+
+            <h2>Popular Groceries</h2>
+
+        </div>
+
+
+        <button
+            class="view-all"
+            onclick="filterProducts('all')">
+
+            View All →
+
+        </button>
+
+    </div>
+
+
+    <div
+        id="productContainer"
+        class="product-container">
+
+        <p>Loading FreshCart products...</p>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================
+     THIRD-PARTY API SECTION
+     DUMMYJSON API
+===================================== -->
+
+<section
+    id="externalProductsSection"
+    class="external-api-section">
+
+
+    <div class="external-api-heading">
+
+        <p>🌍 THIRD-PARTY API INTEGRATION</p>
+
+        <h2>Explore More Products</h2>
+
+        <span>
+
+            Discover additional products fetched
+            directly from DummyJSON API.
+
+        </span>
+
+    </div>
+
+
+    <div
+        id="externalProductContainer"
+        class="external-product-container">
+
+        <p class="external-api-message">
+
+            Loading external products...
+
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================
+     OFFERS SECTION
+===================================== -->
+
+<section
+    id="offers"
+    class="offer-section">
+
+
+    <div class="offer-content">
+
+        <p>LIMITED TIME OFFER</p>
+
+        <h2>
+
+            Get 10% OFF
+
+            <br>
+
+            On Your First Order 🎉
+
+        </h2>
+
+        <p>
+
+            Use our special offer and save money
+            on your grocery shopping.
+
+        </p>
+
+        <button onclick="applyDiscount()">
+
+            Get Offer
+
+        </button>
+
+    </div>
+
+
+    <div class="offer-emoji">
+
+        🛒
+
+        <br>
+
+        🍎🥕🥛
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================
+     CART PANEL
+===================================== -->
+
+<div
+    id="cartPanel"
+    class="cart-panel">
+
+
+    <div class="cart-header">
+
+        <h2>🛒 Your Cart</h2>
+
+        <button onclick="closeCart()">
+            ✕
+        </button>
+
+    </div>
+
+
+    <div id="cartItems"></div>
+
+
+    <div class="cart-bottom">
+
+        <h3>
+
+            Total:
+
+            ₹<span id="cartTotal">0.00</span>
+
+        </h3>
+
+
+        <!-- COUPON SECTION -->
+
+        <div class="coupon-section">
+
+            <input
+                type="text"
+                id="couponCode"
+                placeholder="Enter coupon code"
+            >
+
+            <button onclick="applyCoupon()">
+
+                Apply Coupon
+
+            </button>
+
+
+            <p>
+
+                Discount:
+
+                ₹<span id="discountAmount">0</span>
+
+            </p>
+
+
+            <p>
+
+                <strong>
+
+                    Final Total:
+
+                    ₹<span id="finalTotal">0</span>
+
+                </strong>
+
+            </p>
+
+        </div>
+
+
+        <!-- CHECKOUT BUTTON -->
+
+        <button
+            class="checkout-button"
+            onclick="checkout()">
+
+            Proceed to Checkout
+
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================
+     CONTACT SECTION
+===================================== -->
+
+<section
+    id="contact"
+    class="contact-section">
+
+
+    <div class="contact-container">
+
+
+        <div>
+
+            <div class="logo contact-logo">
+
+                🛒 FreshCart
+
+            </div>
+
+            <p>
+
+                Your trusted Ayyappa online grocery
+                shopping partner.
+
+                <br>
+
+                ALWAYS SUPPORT WITH AYYAPPA FRESH STORE
+
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <h3>Quick Links</h3>
+
+            <p>Home</p>
+
+            <p>Products</p>
+
+            <p>Offers</p>
+
+        </div>
+
+
+        <div>
+
+            <h3>Contact</h3>
+
+            <p>📧 AYYAPPA@FRESHCART.COM</p>
+
+            <p>📞 +91 7032555992</p>
+
+            <p>📞 +91 9391416489</p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================
+     FOOTER
+===================================== -->
+
+<footer>
+
+    <p>
+
+        © 2026 FreshCart |
+        Online Grocery Store
+
+    </p>
+
+</footer>
+
+
+
+<!-- =====================================
+     REDUX TOOLKIT CDN
+     MUST LOAD BEFORE script.js
+===================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/@reduxjs/toolkit@1.9.7/dist/redux-toolkit.umd.min.js"></script>
+
+
+
+<!-- =====================================
+     FRESHCART JAVASCRIPT
+===================================== -->
+
+<script src="script.js"></script>
+
+
+</body>
+
+</html>
+```

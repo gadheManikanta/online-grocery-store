@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Login - FreshCart</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #141e30, #243b55);
+            overflow: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: #6c5ce7;
+            border-radius: 50%;
+            top: -100px;
+            left: -100px;
+            opacity: 0.5;
+        }
+
+        body::after {
+            content: "";
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            background: #00cec9;
+            border-radius: 50%;
+            bottom: -150px;
+            right: -100px;
+            opacity: 0.4;
+        }
+
+        .admin-login {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .admin-login-box {
+            width: 400px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 25px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            color: white;
+        }
+
+        .admin-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #6c5ce7, #00cec9);
+            border-radius: 50%;
+            font-size: 40px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .admin-login-box h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .admin-login-box h2 {
+            font-size: 22px;
+            color: #00cec9;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #dfe6e9;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .input-box {
+            position: relative;
+            margin-bottom: 18px;
+        }
+
+        .input-box span {
+            position: absolute;
+            left: 15px;
+            top: 14px;
+            font-size: 18px;
+        }
+
+        .input-box input {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            border: none;
+            outline: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 15px;
+        }
+
+        .input-box input:focus {
+            box-shadow: 0 0 0 3px rgba(0, 206, 201, 0.4);
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #6c5ce7, #00cec9);
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .login-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 206, 201, 0.35);
+        }
+
+        .login-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #adminMessage {
+            margin-top: 15px;
+            color: #ff7675;
+            font-weight: bold;
+        }
+
+        .back-home {
+            display: inline-block;
+            margin-top: 25px;
+            color: #dfe6e9;
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .back-home:hover {
+            color: #00cec9;
+        }
+
+        @media (max-width: 500px) {
+            .admin-login-box {
+                width: 90%;
+                padding: 30px 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <section class="admin-login">
+
+        <div class="admin-login-box">
+
+            <div class="admin-logo">
+                🛒
+            </div>
+
+            <h1>FreshCart</h1>
+
+            <h2>Admin Portal</h2>
+
+            <p class="subtitle">
+                Manage your grocery store from one place.
+            </p>
+
+            <!-- EMAIL -->
+
+            <div class="input-box">
+
+                <span>👤</span>
+
+                <input
+                    type="email"
+                    id="adminEmail"
+                    placeholder="Admin Email"
+                    autocomplete="username"
+                >
+
+            </div>
+
+            <!-- PASSWORD -->
+
+            <div class="input-box">
+
+                <span>🔐</span>
+
+                <input
+                    type="password"
+                    id="adminPassword"
+                    placeholder="Admin Password"
+                    autocomplete="current-password"
+                >
+
+            </div>
+
+            <!-- LOGIN BUTTON -->
+
+            <button
+                class="login-button"
+                id="loginButton"
+                onclick="adminLogin()">
+
+                🔑 Login to Dashboard
+
+            </button>
+
+            <p id="adminMessage" role="alert"></p>
+
+            <a href="index.html" class="back-home">
+                ← Back to FreshCart
+            </a>
+
+        </div>
+
+    </section>
+
+    <script>
+
+        const API_URL = "http://localhost:5000/api/auth/login";
+
+        async function adminLogin() {
+
+            const email = document
+                .getElementById("adminEmail")
+                .value.trim();
+
+            const password = document
+                .getElementById("adminPassword")
+                .value;
+
+            const message = document.getElementById("adminMessage");
+            const button = document.getElementById("loginButton");
+
+            message.style.color = "#ff7675";
+
+            if (!email || !password) {
+
+                message.innerText =
+                    "Please enter your email and password.";
+
+                return;
+            }
+
+            button.disabled = true;
+            button.innerText = "Logging in...";
+
+            try {
+
+                const response = await fetch(API_URL, {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message || "Login failed."
+                    );
+
+                }
+
+                // Check administrator role
+
+                if (!data.user || data.user.role !== "admin") {
+
+                    throw new Error(
+                        "Access denied. Admin account required."
+                    );
+
+                }
+
+                if (!data.token) {
+
+                    throw new Error(
+                        "Authentication token was not received."
+                    );
+
+                }
+
+                // Store JWT token and admin information
+
+                localStorage.setItem(
+                    "freshCartAdminToken",
+                    data.token
+                );
+
+                localStorage.setItem(
+                    "freshCartAdmin",
+                    JSON.stringify(data.user)
+                );
+
+                localStorage.setItem(
+                    "freshCartAdminLoggedIn",
+                    "true"
+                );
+
+                message.style.color = "#55efc4";
+
+                message.innerText =
+                    "Login successful! Redirecting...";
+
+                alert("Admin Login Successful!");
+
+                window.location.href =
+                    "admin-dashboard.html";
+
+            }
+
+            catch (error) {
+
+                message.innerText = "❌ " + error.message;
+
+                // Clear authentication data after failed login
+
+                localStorage.removeItem("freshCartAdminToken");
+                localStorage.removeItem("freshCartAdmin");
+                localStorage.removeItem("freshCartAdminLoggedIn");
+
+            }
+
+            finally {
+
+                button.disabled = false;
+
+                button.innerText =
+                    "🔑 Login to Dashboard";
+
+            }
+
+        }
+
+        // Allow Enter key to submit login
+
+        document.addEventListener("keydown", function(event) {
+
+            if (event.key === "Enter") {
+                adminLogin();
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>

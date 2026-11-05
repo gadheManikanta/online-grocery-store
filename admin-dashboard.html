@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FreshCart - Admin Dashboard</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7f5;
+            color: #333;
+        }
+
+        header {
+            background: #198754;
+            color: white;
+            padding: 22px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        header h1 {
+            margin-bottom: 7px;
+        }
+
+        .logout-btn {
+            background: white;
+            color: #198754;
+            border: none;
+            padding: 11px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 25px;
+        }
+
+        .welcome {
+            margin-bottom: 25px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+            border-left: 5px solid #198754;
+        }
+
+        .card h3 {
+            color: #666;
+            font-size: 15px;
+            margin-bottom: 15px;
+        }
+
+        .card h2 {
+            color: #198754;
+            font-size: 28px;
+        }
+
+        .section {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+        }
+
+        .section h2 {
+            color: #198754;
+            margin-bottom: 20px;
+        }
+
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .quick-links a {
+            text-decoration: none;
+            background: #e8f5e9;
+            color: #198754;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .quick-links a:hover {
+            background: #198754;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 13px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+
+        th {
+            background: #e8f5e9;
+            color: #198754;
+        }
+
+        .refresh-btn {
+            background: #198754;
+            color: white;
+            border: none;
+            padding: 11px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        .message {
+            padding: 20px;
+            text-align: center;
+        }
+
+        @media(max-width: 850px) {
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .quick-links {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media(max-width: 500px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .section {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div>
+            <h1>🛒 FreshCart Admin Dashboard</h1>
+            <p>Online Grocery Store Management</p>
+        </div>
+
+        <button class="logout-btn" onclick="adminLogout()">
+            🚪 Logout
+        </button>
+    </header>
+
+    <div class="container">
+
+        <div class="welcome">
+            <h2 id="welcomeMessage">Welcome, Admin! 👋</h2>
+            <p>Here is your store overview.</p>
+        </div>
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>📦 Total Products</h3>
+                <h2 id="totalProducts">0</h2>
+            </div>
+
+            <div class="card">
+                <h3>🛍️ Total Orders</h3>
+                <h2 id="totalOrders">0</h2>
+            </div>
+
+            <div class="card">
+                <h3>💰 Total Revenue</h3>
+                <h2 id="totalRevenue">₹0</h2>
+            </div>
+
+            <div class="card">
+                <h3>🚚 Pending Deliveries</h3>
+                <h2 id="pendingOrders">0</h2>
+            </div>
+
+        </div>
+
+        <div class="section">
+
+            <h2>⚡ Quick Actions</h2>
+
+            <div class="quick-links">
+
+                <a href="admin-products.html">
+                    🥬 Manage Products
+                </a>
+
+                <a href="admin-orders.html">
+                    📦 Manage Orders
+                </a>
+
+                <a href="index.html">
+                    🏠 Visit Store
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="section">
+
+            <h2>📋 Recent Orders</h2>
+
+            <button class="refresh-btn" onclick="loadDashboard()">
+                🔄 Refresh Dashboard
+            </button>
+
+            <div id="ordersTable">
+                <div class="message">Loading orders...</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        const PRODUCTS_API = "http://localhost:5000/api/products";
+        const ORDERS_API = "http://localhost:5000/api/orders";
+
+        // Get JWT token
+        const token = localStorage.getItem("freshCartAdminToken");
+
+        // Check whether admin is logged in
+        if (!token) {
+
+            alert("Please login as administrator.");
+
+            window.location.replace("admin-login.html");
+
+        }
+
+        // Get admin details
+        const admin = JSON.parse(
+            localStorage.getItem("freshCartAdmin") || "{}"
+        );
+
+        if (admin.name) {
+            document.getElementById("welcomeMessage").textContent =
+                "Welcome, " + admin.name + "! 👋";
+        }
+
+        // Logout function
+        function adminLogout() {
+
+            localStorage.removeItem("freshCartAdminToken");
+            localStorage.removeItem("freshCartAdmin");
+            localStorage.removeItem("freshCartAdminLoggedIn");
+
+            alert("You have logged out successfully.");
+
+            window.location.replace("admin-login.html");
+
+        }
+
+        // Load dashboard data
+        async function loadDashboard() {
+
+            const currentToken =
+                localStorage.getItem("freshCartAdminToken");
+
+            if (!currentToken) {
+                adminLogout();
+                return;
+            }
+
+            try {
+
+                const [productsResponse, ordersResponse] =
+                    await Promise.all([
+
+                        fetch(PRODUCTS_API, {
+                            headers: {
+                                "Authorization": "Bearer " + currentToken
+                            }
+                        }),
+
+                        fetch(ORDERS_API, {
+                            headers: {
+                                "Authorization": "Bearer " + currentToken
+                            }
+                        })
+
+                    ]);
+
+                // Check authentication
+                if (
+                    productsResponse.status === 401 ||
+                    productsResponse.status === 403 ||
+                    ordersResponse.status === 401 ||
+                    ordersResponse.status === 403
+                ) {
+
+                    alert("Your session is invalid or expired. Please login again.");
+
+                    adminLogout();
+
+                    return;
+
+                }
+
+                if (!productsResponse.ok || !ordersResponse.ok) {
+                    throw new Error("Unable to fetch dashboard data.");
+                }
+
+                const products = await productsResponse.json();
+                const orders = await ordersResponse.json();
+
+                // Total products
+                document.getElementById("totalProducts").textContent =
+                    products.length;
+
+                // Total orders
+                document.getElementById("totalOrders").textContent =
+                    orders.length;
+
+                // Total revenue
+                const revenue = orders
+                    .filter(order => order.status !== "Cancelled")
+                    .reduce(
+                        (sum, order) =>
+                            sum + Number(order.finalTotal || 0),
+                        0
+                    );
+
+                document.getElementById("totalRevenue").textContent =
+                    "₹" + revenue.toFixed(2);
+
+                // Pending deliveries
+                const pending = orders.filter(order =>
+                    order.status !== "Delivered" &&
+                    order.status !== "Cancelled"
+                ).length;
+
+                document.getElementById("pendingOrders").textContent =
+                    pending;
+
+                // Recent orders
+                displayRecentOrders(orders);
+
+            } catch (error) {
+
+                console.error("Dashboard error:", error);
+
+                document.getElementById("ordersTable").innerHTML = `
+                    <div class="message">
+                        Unable to load dashboard data.
+                        <br>
+                        Please check your backend server.
+                    </div>
+                `;
+
+            }
+
+        }
+
+        // Display recent orders
+        function displayRecentOrders(orders) {
+
+            const container =
+                document.getElementById("ordersTable");
+
+            if (!orders.length) {
+
+                container.innerHTML = `
+                    <div class="message">
+                        No orders available yet.
+                    </div>
+                `;
+
+                return;
+
+            }
+
+            const recentOrders = [...orders]
+                .sort((a, b) =>
+                    new Date(b.orderDate || b.createdAt || 0) -
+                    new Date(a.orderDate || a.createdAt || 0)
+                )
+                .slice(0, 5);
+
+            container.innerHTML = `
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        ${recentOrders.map(order => `
+
+                            <tr>
+
+                                <td>${escapeHTML(order.orderId)}</td>
+
+                                <td>${escapeHTML(order.customerName)}</td>
+
+                                <td>
+                                    ₹${Number(order.finalTotal || 0).toFixed(2)}
+                                </td>
+
+                                <td>${escapeHTML(order.status)}</td>
+
+                            </tr>
+
+                        `).join("")}
+
+                    </tbody>
+
+                </table>
+
+            `;
+
+        }
+
+        // Prevent HTML injection
+        function escapeHTML(value) {
+
+            return String(value ?? "").replace(/[&<>"']/g, character => {
+
+                const entities = {
+                    "&": "&amp;",
+                    "<": "&lt;",
+                    ">": "&gt;",
+                    '"': "&quot;",
+                    "'": "&#39;"
+                };
+
+                return entities[character];
+
+            });
+
+        }
+
+        // Load dashboard when page opens
+        window.addEventListener("DOMContentLoaded", loadDashboard);
+
+    </script>
+
+</body>
+
+</html>

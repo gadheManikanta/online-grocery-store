@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>FreshCart - Checkout</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f8f5;
+            padding: 30px;
+        }
+
+        .checkout-container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .checkout-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .checkout-header h1 {
+            color: #159447;
+            margin-bottom: 10px;
+        }
+
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .checkout-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .checkout-box h2 {
+            margin-bottom: 20px;
+            color: #159447;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: none;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .final-total {
+            font-size: 20px;
+            font-weight: bold;
+            color: #159447;
+            border-top: 2px solid #159447;
+            padding-top: 15px;
+        }
+
+        .place-order-button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 20px;
+            background: #159447;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .place-order-button:hover {
+            background: #107a39;
+        }
+
+        .place-order-button:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        .back-button {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #159447;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        @media (max-width: 700px) {
+
+            body {
+                padding: 15px;
+            }
+
+            .checkout-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="checkout-container">
+
+
+    <div class="checkout-header">
+
+        <h1>🛒 FreshCart Checkout</h1>
+
+        <p>Complete your order and schedule your delivery</p>
+
+    </div>
+
+
+
+    <div class="checkout-grid">
+
+
+        <!-- CUSTOMER DETAILS -->
+
+        <div class="checkout-box">
+
+            <h2>👤 Delivery Details</h2>
+
+
+            <div class="form-group">
+
+                <label>Full Name</label>
+
+                <input
+                    type="text"
+                    id="customerName"
+                    placeholder="Enter your full name"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Phone Number</label>
+
+                <input
+                    type="tel"
+                    id="phone"
+                    placeholder="Enter your phone number"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Delivery Address</label>
+
+                <textarea
+                    id="address"
+                    placeholder="Enter your complete delivery address"
+                    required
+                ></textarea>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Delivery Date</label>
+
+                <input
+                    type="date"
+                    id="deliveryDate"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Payment Method</label>
+
+                <select id="paymentMethod" required>
+
+                    <option value="">
+                        Select Payment Method
+                    </option>
+
+                    <option value="cod">
+                        Cash on Delivery
+                    </option>
+
+                    <option value="upi">
+                        UPI
+                    </option>
+
+                    <option value="card">
+                        Credit / Debit Card
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ORDER SUMMARY -->
+
+        <div class="checkout-box">
+
+            <h2>🛍️ Order Summary</h2>
+
+
+            <div id="checkoutItems"></div>
+
+
+            <div class="price-row">
+
+                <span>Subtotal</span>
+
+                <span>
+                    ₹<span id="checkoutSubtotal">0</span>
+                </span>
+
+            </div>
+
+
+            <div class="price-row">
+
+                <span>Discount</span>
+
+                <span>
+                    ₹<span id="checkoutDiscount">0</span>
+                </span>
+
+            </div>
+
+
+            <div class="price-row final-total">
+
+                <span>Final Total</span>
+
+                <span>
+                    ₹<span id="checkoutFinalTotal">0</span>
+                </span>
+
+            </div>
+
+
+            <button
+                class="place-order-button"
+                id="placeOrderButton"
+                onclick="placeOrder()">
+
+                ✅ Place Order
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <a href="index.html" class="back-button">
+
+        ← Back to Shopping
+
+    </a>
+
+
+</div>
+
+
+
+<script>
+
+
+// ==========================================
+// MONGODB BACKEND API
+// ==========================================
+
+const API_URL = "http://localhost:5000/api/orders";
+
+
+// ==========================================
+// CART
+// ==========================================
+
+let cart = JSON.parse(
+    localStorage.getItem("freshCartCart")
+) || [];
+
+
+let subtotal = 0;
+
+
+// ==========================================
+// SET MINIMUM DELIVERY DATE
+// ==========================================
+
+const today = new Date();
+
+const localToday = new Date(
+    today.getTime() - today.getTimezoneOffset() * 60000
+).toISOString().split("T")[0];
+
+document.getElementById("deliveryDate").min = localToday;
+
+
+// ==========================================
+// DISPLAY CART
+// ==========================================
+
+function displayCheckoutItems() {
+
+    const container = document.getElementById("checkoutItems");
+
+    container.innerHTML = "";
+
+    subtotal = 0;
+
+
+    if (cart.length === 0) {
+
+        container.innerHTML = `
+            <p style="color:red; padding:15px 0;">
+                Your cart is empty!
+            </p>
+        `;
+
+    }
+
+
+    cart.forEach(function(item) {
+
+        const itemTotal = Number(item.price) * Number(item.quantity);
+
+        subtotal += itemTotal;
+
+
+        container.innerHTML += `
+
+            <div class="order-item">
+
+                <span>
+                    ${item.name} × ${item.quantity}
+                </span>
+
+                <strong>
+                    ₹${itemTotal.toFixed(2)}
+                </strong>
+
+            </div>
+
+        `;
+
+    });
+
+
+    document.getElementById("checkoutSubtotal").innerText =
+        subtotal.toFixed(2);
+
+
+    calculateFinalTotal();
+
+}
+
+
+// ==========================================
+// CALCULATE FINAL TOTAL
+// ==========================================
+
+function calculateFinalTotal() {
+
+    let discount = Number(
+        localStorage.getItem("freshCartDiscount")
+    ) || 0;
+
+
+    discount = Math.min(
+        Math.max(discount, 0),
+        subtotal
+    );
+
+
+    const finalTotal = subtotal - discount;
+
+
+    document.getElementById("checkoutDiscount").innerText =
+        discount.toFixed(2);
+
+
+    document.getElementById("checkoutFinalTotal").innerText =
+        finalTotal.toFixed(2);
+
+}
+
+
+// ==========================================
+// PLACE ORDER
+// ==========================================
+
+async function placeOrder() {
+
+
+    const button = document.getElementById("placeOrderButton");
+
+
+    // GET CUSTOMER DETAILS
+
+    const name = document.getElementById("customerName").value.trim();
+
+    const phone = document.getElementById("phone").value.trim();
+
+    const address = document.getElementById("address").value.trim();
+
+    const deliveryDate = document.getElementById("deliveryDate").value;
+
+    const paymentMethod = document.getElementById("paymentMethod").value;
+
+
+    // VALIDATE DETAILS
+
+    if (
+        name === "" ||
+        phone === "" ||
+        address === "" ||
+        deliveryDate === "" ||
+        paymentMethod === ""
+    ) {
+
+        alert("Please fill all delivery details.");
+
+        return;
+
+    }
+
+
+    if (!/^\d{10}$/.test(phone)) {
+
+        alert("Please enter a valid 10-digit phone number.");
+
+        return;
+
+    }
+
+
+    if (deliveryDate < localToday) {
+
+        alert("Please select today or a future delivery date.");
+
+        return;
+
+    }
+
+
+    // CHECK CART
+
+    if (cart.length === 0) {
+
+        alert("Your cart is empty!");
+
+        return;
+
+    }
+
+
+    // GENERATE ORDER ID
+
+    const orderId = "FC" + Date.now();
+
+
+    // GET DISCOUNT
+
+    const discount = Number(
+        localStorage.getItem("freshCartDiscount")
+    ) || 0;
+
+
+    // CREATE ORDER OBJECT
+
+    const order = {
+
+        orderId: orderId,
+
+        customerName: name,
+
+        phone: phone,
+
+        address: address,
+
+        deliveryDate: deliveryDate,
+
+        paymentMethod: paymentMethod,
+
+        items: cart,
+
+        discount: discount
+
+    };
+
+
+    // SEND ORDER TO MONGODB BACKEND
+
+    try {
+
+        button.disabled = true;
+
+        button.innerText = "Placing Order...";
+
+
+        const response = await fetch(API_URL, {
+
+            method: "POST",
+
+            headers: {
+
+                "Content-Type": "application/json"
+
+            },
+
+            body: JSON.stringify(order)
+
+        });
+
+
+        const result = await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                result.message || "Failed to place order"
+            );
+
+        }
+
+
+        console.log(
+            "Order saved successfully:",
+            result.order
+        );
+
+
+        // SUCCESS MESSAGE
+
+        alert(
+
+            "🎉 Order placed successfully!\n\n" +
+
+            "Order ID: " + result.order.orderId +
+
+            "\n\n" +
+
+            "Thank you, " + name + "!"
+
+        );
+
+
+        // CLEAR CART
+
+        localStorage.removeItem("freshCartCart");
+
+
+        // CLEAR DISCOUNT
+
+        localStorage.removeItem("freshCartDiscount");
+
+
+        // REDIRECT TO ORDER TRACKING
+
+        window.location.href =
+            "order-tracking.html?orderId=" +
+            encodeURIComponent(result.order.orderId);
+
+
+    }
+
+    catch (error) {
+
+        console.error("Order Error:", error);
+
+
+        alert(
+
+            "❌ Unable to place order.\n\n" +
+
+            error.message +
+
+            "\n\nPlease check whether the FreshCart backend server is running."
+
+        );
+
+    }
+
+    finally {
+
+        button.disabled = false;
+
+        button.innerText = "✅ Place Order";
+
+    }
+
+}
+
+
+// ==========================================
+// START
+// ==========================================
+
+displayCheckoutItems();
+
+
+</script>
+
+
+</body>
+
+</html>

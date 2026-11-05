@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FreshCart - Order Tracking</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f8f4;
+            color: #333;
+        }
+
+        header {
+            background: #198754;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 28px;
+        }
+
+        header p {
+            margin-top: 6px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 35px auto;
+            padding: 20px;
+        }
+
+        .search-box,
+        .order-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+        }
+
+        .search-box h2,
+        .order-card h2 {
+            color: #198754;
+            margin-bottom: 18px;
+        }
+
+        .search-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            padding: 13px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        button {
+            padding: 13px 22px;
+            background: #198754;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background: #126b40;
+        }
+
+        .refresh-btn {
+            margin-top: 15px;
+        }
+
+        .message {
+            text-align: center;
+            padding: 25px;
+            color: #666;
+        }
+
+        .order-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .info-box {
+            background: #f4f8f4;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .info-box strong {
+            color: #198754;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .items-list {
+            margin-top: 15px;
+        }
+
+        .item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .item img {
+            width: 65px;
+            height: 65px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-details h4 {
+            margin-bottom: 5px;
+        }
+
+        .total-section {
+            margin-top: 20px;
+            text-align: right;
+            line-height: 2;
+        }
+
+        .grand-total {
+            color: #198754;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .status-tracker {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            position: relative;
+            gap: 5px;
+        }
+
+        .status-step {
+            text-align: center;
+            flex: 1;
+            position: relative;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .status-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #ddd;
+            margin: 0 auto 10px;
+            line-height: 30px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .status-step.completed .status-circle {
+            background: #198754;
+        }
+
+        .status-step.completed {
+            color: #198754;
+            font-weight: bold;
+        }
+
+        .status-text {
+            background: #e8f5e9;
+            color: #198754;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .cancelled {
+            background: #fdeaea;
+            color: #c62828;
+        }
+
+        @media(max-width: 600px) {
+            .search-area {
+                flex-direction: column;
+            }
+
+            .order-info {
+                grid-template-columns: 1fr;
+            }
+
+            .status-tracker {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .status-step {
+                min-width: 65px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>🛒 FreshCart</h1>
+        <p>Track Your Grocery Order</p>
+    </header>
+
+    <div class="container">
+
+        <div class="search-box">
+
+            <h2>Track Your Order</h2>
+
+            <div class="search-area">
+
+                <input
+                    type="text"
+                    id="orderIdInput"
+                    placeholder="Enter your Order ID"
+                >
+
+                <button onclick="searchOrder()">
+                    Track Order
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="order-card" id="orderDetails">
+
+            <div class="message">
+                Enter your Order ID to view your order details.
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        const API_URL = "http://localhost:5000/api/orders";
+
+        const orderDetails = document.getElementById("orderDetails");
+
+        // Search order
+        function searchOrder() {
+
+            const orderId = document
+                .getElementById("orderIdInput")
+                .value.trim();
+
+            if (!orderId) {
+                alert("Please enter your Order ID");
+                return;
+            }
+
+            loadOrder(orderId);
+        }
+
+
+        // Load order from MongoDB backend
+        async function loadOrder(orderId) {
+
+            orderDetails.innerHTML = `
+                <div class="message">
+                    Loading your order...
+                </div>
+            `;
+
+            try {
+
+                const response = await fetch(
+                    API_URL + "/" + encodeURIComponent(orderId)
+                );
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || "Order not found");
+                }
+
+                if (!data || !data.orderId) {
+                    throw new Error("Invalid order information received");
+                }
+
+                displayOrder(data);
+
+            } catch (error) {
+
+                console.error("Order tracking error:", error);
+
+                orderDetails.innerHTML = `
+                    <div class="message">
+                        <h3>Unable to find your order</h3>
+                        <p>${escapeHTML(error.message)}</p>
+                        <p>Please check your Order ID and try again.</p>
+                    </div>
+                `;
+
+            }
+
+        }
+
+
+        // Display order details
+        function displayOrder(order) {
+
+            const statuses = [
+                "Order Placed",
+                "Processing",
+                "Shipped",
+                "Out for Delivery",
+                "Delivered"
+            ];
+
+            const currentStatus = order.status || "Order Placed";
+
+            let statusHTML = "";
+
+            if (currentStatus === "Cancelled") {
+
+                statusHTML = `
+                    <div class="status-text cancelled">
+                        ❌ This order has been cancelled.
+                    </div>
+                `;
+
+            } else {
+
+                const currentIndex = statuses.indexOf(currentStatus);
+
+                statusHTML = `
+                    <h3>Order Status</h3>
+
+                    <div class="status-tracker">
+
+                        ${statuses.map((status, index) => `
+                            <div class="status-step ${
+                                currentIndex >= 0 && index <= currentIndex
+                                    ? "completed"
+                                    : ""
+                            }">
+
+                                <div class="status-circle">
+                                    ${currentIndex >= 0 && index <= currentIndex ? "✓" : index + 1}
+                                </div>
+
+                                <span>${escapeHTML(status)}</span>
+
+                            </div>
+                        `).join("")}
+
+                    </div>
+
+                    <div class="status-text">
+                        Current Status: ${escapeHTML(currentStatus)}
+                    </div>
+                `;
+
+            }
+
+
+            const itemsHTML = (order.items || []).map(item => `
+
+                <div class="item">
+
+                    <img
+                        src="${escapeHTML(item.image || "https://placehold.co/65x65?text=Product")}"
+                        alt="${escapeHTML(item.name || "Product")}"
+                        onerror="this.src='https://placehold.co/65x65?text=Product'"
+                    >
+
+                    <div class="item-details">
+
+                        <h4>${escapeHTML(item.name || "Product")}</h4>
+
+                        <p>
+                            ₹${Number(item.price || 0).toFixed(2)}
+                            × ${Number(item.quantity || 0)}
+                        </p>
+
+                    </div>
+
+                    <strong>
+                        ₹${(
+                            Number(item.price || 0) *
+                            Number(item.quantity || 0)
+                        ).toFixed(2)}
+                    </strong>
+
+                </div>
+
+            `).join("");
+
+
+            orderDetails.innerHTML = `
+
+                <h2>Order Details</h2>
+
+                <div class="order-info">
+
+                    <div class="info-box">
+                        <strong>Order ID</strong>
+                        ${escapeHTML(order.orderId)}
+                    </div>
+
+                    <div class="info-box">
+                        <strong>Customer Name</strong>
+                        ${escapeHTML(order.customerName)}
+                    </div>
+
+                    <div class="info-box">
+                        <strong>Phone Number</strong>
+                        ${escapeHTML(order.phone)}
+                    </div>
+
+                    <div class="info-box">
+                        <strong>Delivery Address</strong>
+                        ${escapeHTML(order.address)}
+                    </div>
+
+                    <div class="info-box">
+                        <strong>Delivery Date</strong>
+                        ${escapeHTML(order.deliveryDate)}
+                    </div>
+
+                    <div class="info-box">
+                        <strong>Payment Method</strong>
+                        ${escapeHTML(order.paymentMethod)}
+                    </div>
+
+                </div>
+
+                ${statusHTML}
+
+                <h2>Ordered Products</h2>
+
+                <div class="items-list">
+                    ${itemsHTML || "<p>No products found.</p>"}
+                </div>
+
+                <div class="total-section">
+
+                    <p>
+                        Subtotal:
+                        ₹${Number(order.subtotal || 0).toFixed(2)}
+                    </p>
+
+                    <p>
+                        Discount:
+                        ₹${Number(order.discount || 0).toFixed(2)}
+                    </p>
+
+                    <p class="grand-total">
+                        Final Total:
+                        ₹${Number(order.finalTotal || 0).toFixed(2)}
+                    </p>
+
+                </div>
+
+                <button
+                    class="refresh-btn"
+                    onclick="loadOrder('${escapeHTML(order.orderId)}')"
+                >
+                    🔄 Refresh Order Status
+                </button>
+
+            `;
+
+        }
+
+
+        // Prevent HTML injection
+        function escapeHTML(value) {
+
+            return String(value ?? "").replace(/[&<>"']/g, function(character) {
+
+                const entities = {
+                    "&": "&amp;",
+                    "<": "&lt;",
+                    ">": "&gt;",
+                    '"': "&quot;",
+                    "'": "&#39;"
+                };
+
+                return entities[character];
+
+            });
+
+        }
+
+
+        // Automatically load order ID from checkout redirect
+        window.addEventListener("DOMContentLoaded", function() {
+
+            const urlParams = new URLSearchParams(window.location.search);
+
+            const orderId = urlParams.get("orderId");
+
+            if (orderId) {
+
+                document.getElementById("orderIdInput").value = orderId;
+
+                loadOrder(orderId);
+
+            }
+
+        });
+
+
+        // Search when Enter key is pressed
+        document.getElementById("orderIdInput").addEventListener("keydown", function(event) {
+
+            if (event.key === "Enter") {
+                searchOrder();
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>

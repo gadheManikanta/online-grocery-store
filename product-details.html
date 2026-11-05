@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FreshCart - Product Details</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background: #f5f8f4;
+            color: #222;
+        }
+
+        /* HEADER */
+
+        .header {
+            background: white;
+            padding: 18px 5%;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .logo {
+            color: #159447;
+            font-size: 27px;
+            font-weight: bold;
+        }
+
+        /* PRODUCT SECTION */
+
+        .product-section {
+            max-width: 1100px;
+            margin: 60px auto;
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        /* PRODUCT IMAGE */
+
+        .product-image {
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #eaffea, #fff9e8);
+            font-size: 180px;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* PRODUCT INFORMATION */
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .category {
+            color: #159447;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .product-name {
+            font-size: 40px;
+            color: #173d25;
+            margin-bottom: 15px;
+        }
+
+        .description {
+            color: #666;
+            font-size: 17px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .price {
+            font-size: 30px;
+            color: #159447;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+
+        /* QUANTITY */
+
+        .quantity-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .quantity-box {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .quantity-box button {
+            width: 38px;
+            height: 38px;
+            border: none;
+            border-radius: 50%;
+            background: #159447;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .quantity-box button:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+        }
+
+        .quantity-box span {
+            font-size: 20px;
+            font-weight: bold;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        /* ADD TO CART */
+
+        .add-cart-button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: #159447;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .add-cart-button:hover {
+            background: #0e7536;
+        }
+
+        .add-cart-button:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+        }
+
+        /* BACK BUTTON */
+
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            color: #159447;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            text-decoration: underline;
+        }
+
+        /* RESPONSIVE DESIGN */
+
+        @media (max-width: 800px) {
+
+            .product-section {
+                grid-template-columns: 1fr;
+                margin: 30px 5%;
+            }
+
+            .product-image {
+                height: 300px;
+                font-size: 130px;
+            }
+
+            .product-name {
+                font-size: 32px;
+            }
+
+        }
+
+        @media (max-width: 500px) {
+
+            .product-section {
+                padding: 15px;
+            }
+
+            .product-image {
+                height: 250px;
+                font-size: 100px;
+            }
+
+            .product-info {
+                padding: 10px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- HEADER -->
+
+    <header class="header">
+
+        <div class="logo">
+            🛒 FreshCart
+        </div>
+
+    </header>
+
+
+    <!-- PRODUCT DETAILS SECTION -->
+
+    <section class="product-section">
+
+        <!-- PRODUCT IMAGE -->
+
+        <div id="productImage" class="product-image">
+            🛒
+        </div>
+
+
+        <!-- PRODUCT INFORMATION -->
+
+        <div class="product-info">
+
+            <p id="productCategory" class="category">
+                Loading...
+            </p>
+
+            <h1 id="productName" class="product-name">
+                Loading Product...
+            </h1>
+
+            <p id="productDescription" class="description">
+                Please wait while product details are loading.
+            </p>
+
+            <div id="productPrice" class="price">
+                ₹0
+            </div>
+
+
+            <!-- QUANTITY -->
+
+            <p class="quantity-title">
+                Quantity
+            </p>
+
+            <div class="quantity-box">
+
+                <button
+                    id="decreaseButton"
+                    onclick="decreaseQuantity()"
+                    disabled>
+                    −
+                </button>
+
+                <span id="quantity">1</span>
+
+                <button
+                    id="increaseButton"
+                    onclick="increaseQuantity()"
+                    disabled>
+                    +
+                </button>
+
+            </div>
+
+
+            <!-- ADD TO CART -->
+
+            <button
+                id="addCartButton"
+                class="add-cart-button"
+                onclick="addProductToCart()"
+                disabled>
+
+                🛒 Add to Cart
+
+            </button>
+
+
+            <!-- BACK BUTTON -->
+
+            <a href="index.html" class="back-button">
+                ← Back to Products
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script>
+
+        // =========================================
+        // MONGODB BACKEND API
+        // =========================================
+
+        const API_URL = "http://localhost:5000/api/products";
+
+
+        // =========================================
+        // GET PRODUCT ID FROM URL
+        // =========================================
+
+        const urlParams = new URLSearchParams(
+            window.location.search
+        );
+
+        const productId = urlParams.get("id");
+
+
+        // =========================================
+        // GLOBAL VARIABLES
+        // =========================================
+
+        let product = null;
+
+        let quantity = 1;
+
+
+        // =========================================
+        // LOAD PRODUCT FROM MONGODB
+        // =========================================
+
+        window.loadProduct = async function () {
+
+            if (!productId) {
+
+                showProductNotFound(
+                    "Product ID is missing. Please open this page from the Products section."
+                );
+
+                return;
+
+            }
+
+            try {
+
+                console.log("Loading product:", productId);
+
+                const response = await fetch(
+                    API_URL + "/" + encodeURIComponent(productId)
+                );
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Server returned status: " + response.status
+                    );
+
+                }
+
+                product = await response.json();
+
+                console.log(
+                    "Product loaded from MongoDB:",
+                    product
+                );
+
+                displayProduct();
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Product Loading Error:",
+                    error
+                );
+
+                showProductNotFound(
+                    "Unable to load product. Please check whether the backend server is running."
+                );
+
+            }
+
+        };
+
+
+        // =========================================
+        // DISPLAY PRODUCT DETAILS
+        // =========================================
+
+        function displayProduct() {
+
+            document.getElementById("productName").innerText =
+                product.name || "Product Name";
+
+            document.getElementById("productCategory").innerText =
+                product.category || "General";
+
+            document.getElementById("productDescription").innerText =
+                product.description || "Fresh quality product.";
+
+            updateQuantityAndPrice();
+
+
+            // DISPLAY PRODUCT IMAGE
+
+            const imageContainer =
+                document.getElementById("productImage");
+
+            imageContainer.innerHTML = "";
+
+            const imageValue = product.image || "🛒";
+
+            if (
+                typeof imageValue === "string" &&
+                (
+                    imageValue.startsWith("http://") ||
+                    imageValue.startsWith("https://") ||
+                    imageValue.startsWith("data:image/")
+                )
+            ) {
+
+                const img = document.createElement("img");
+
+                img.src = imageValue;
+
+                img.alt = product.name || "Product";
+
+                img.onerror = function () {
+
+                    imageContainer.innerText = "🛒";
+
+                };
+
+                imageContainer.appendChild(img);
+
+            }
+
+            else {
+
+                imageContainer.innerText = imageValue;
+
+            }
+
+
+            // CHECK PRODUCT AVAILABILITY
+
+            const available =
+                product.availability === true ||
+                product.availability === "available";
+
+            document.getElementById("addCartButton").disabled =
+                !available;
+
+            document.getElementById("increaseButton").disabled =
+                !available;
+
+            document.getElementById("decreaseButton").disabled =
+                !available;
+
+            document.getElementById("addCartButton").innerText =
+                available ? "🛒 Add to Cart" : "❌ Out of Stock";
+
+        }
+
+
+        // =========================================
+        // PRODUCT NOT FOUND
+        // =========================================
+
+        function showProductNotFound(message) {
+
+            document.getElementById("productImage").innerText =
+                "❌";
+
+            document.getElementById("productCategory").innerText =
+                "Product";
+
+            document.getElementById("productName").innerText =
+                "Product Not Found";
+
+            document.getElementById("productDescription").innerText =
+                message;
+
+            document.getElementById("productPrice").innerText =
+                "₹0";
+
+            document.getElementById("addCartButton").disabled =
+                true;
+
+            document.getElementById("addCartButton").innerText =
+                "Product Unavailable";
+
+            document.getElementById("increaseButton").disabled =
+                true;
+
+            document.getElementById("decreaseButton").disabled =
+                true;
+
+        }
+
+
+        // =========================================
+        // INCREASE QUANTITY
+        // =========================================
+
+        function increaseQuantity() {
+
+            if (!product || quantity >= 99) {
+
+                return;
+
+            }
+
+            quantity++;
+
+            updateQuantityAndPrice();
+
+        }
+
+
+        // =========================================
+        // DECREASE QUANTITY
+        // =========================================
+
+        function decreaseQuantity() {
+
+            if (quantity > 1) {
+
+                quantity--;
+
+            }
+
+            updateQuantityAndPrice();
+
+        }
+
+
+        // =========================================
+        // UPDATE QUANTITY AND TOTAL PRICE
+        // =========================================
+
+        function updateQuantityAndPrice() {
+
+            document.getElementById("quantity").innerText =
+                quantity;
+
+            if (product) {
+
+                document.getElementById("productPrice").innerText =
+                    "₹" + (
+                        Number(product.price) * quantity
+                    ).toFixed(2);
+
+            }
+
+        }
+
+
+        // =========================================
+        // ADD PRODUCT TO CART
+        // =========================================
+
+        function addProductToCart() {
+
+            if (!product) {
+
+                alert("Product not found!");
+
+                return;
+
+            }
+
+
+            if (product.availability !== true &&
+                product.availability !== "available") {
+
+                alert("Sorry! This product is out of stock.");
+
+                return;
+
+            }
+
+
+            // GET EXISTING CART
+
+            let cart = [];
+
+            try {
+
+                cart = JSON.parse(
+                    localStorage.getItem("freshCartCart") || "[]"
+                );
+
+                if (!Array.isArray(cart)) {
+
+                    cart = [];
+
+                }
+
+            }
+
+            catch (error) {
+
+                console.error("Cart Loading Error:", error);
+
+                cart = [];
+
+            }
+
+
+            // FIND EXISTING PRODUCT USING MONGODB ID
+
+            let existingProduct = cart.find(function (item) {
+
+                return String(item.id) === String(product._id);
+
+            });
+
+
+            // UPDATE QUANTITY IF PRODUCT ALREADY EXISTS
+
+            if (existingProduct) {
+
+                existingProduct.quantity =
+                    Number(existingProduct.quantity || 0) + quantity;
+
+            }
+
+            else {
+
+                cart.push({
+
+                    id: product._id,
+
+                    name: product.name,
+
+                    price: Number(product.price),
+
+                    image: product.image,
+
+                    quantity: quantity
+
+                });
+
+            }
+
+
+            // SAVE CART TO LOCAL STORAGE
+
+            localStorage.setItem(
+                "freshCartCart",
+                JSON.stringify(cart)
+            );
+
+
+            // SUCCESS MESSAGE
+
+            alert(
+                product.name +
+                " × " +
+                quantity +
+                " added to cart successfully!"
+            );
+
+
+            // GO TO HOME PAGE
+
+            window.location.href = "index.html";
+
+        }
+
+
+        // =========================================
+        // START PRODUCT LOADING
+        // =========================================
+
+        loadProduct();
+
+    </script>
+
+</body>
+
+</html>

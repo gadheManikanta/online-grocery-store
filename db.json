@@ -1,0 +1,245 @@
+{
+  "users": [],
+  "products": [
+    {
+      "id": "2",
+      "name": "Fresh Bananas",
+      "category": "fruits",
+      "price": 80,
+      "image": "🍌",
+      "description": "Fresh ripe bananas",
+      "availability": true
+    },
+    {
+      "id": "4",
+      "name": "Fresh Grapes",
+      "category": "fruits",
+      "price": 100,
+      "image": "🍇",
+      "description": "Sweet seedless grapes",
+      "availability": true
+    },
+    {
+      "id": "5",
+      "name": "Fresh Carrots",
+      "category": "vegetables",
+      "price": 60,
+      "image": "🥕",
+      "description": "Fresh organic carrots",
+      "availability": true
+    },
+    {
+      "id": "6",
+      "name": "Broccoli",
+      "category": "vegetables",
+      "price": 80,
+      "image": "🥦",
+      "description": "Fresh green broccoli",
+      "availability": true
+    },
+    {
+      "id": "7",
+      "name": "Tomatoes",
+      "category": "vegetables",
+      "price": 50,
+      "image": "🍅",
+      "description": "Fresh red tomatoes",
+      "availability": true
+    },
+    {
+      "id": "8",
+      "name": "Potatoes",
+      "category": "vegetables",
+      "price": 45,
+      "image": "🥔",
+      "description": "Fresh quality potatoes",
+      "availability": true
+    },
+    {
+      "id": "9",
+      "name": "Fresh Milk",
+      "category": "dairy",
+      "price": 60,
+      "image": "🥛",
+      "description": "Pure and fresh milk",
+      "availability": true
+    },
+    {
+      "id": "10",
+      "name": "Cheese",
+      "category": "dairy",
+      "price": 150,
+      "image": "🧀",
+      "description": "Fresh dairy cheese",
+      "availability": true
+    },
+    {
+      "id": "11",
+      "name": "Eggs",
+      "category": "dairy",
+      "price": 90,
+      "image": "🥚",
+      "description": "Farm fresh eggs",
+      "availability": true
+    },
+    {
+      "id": "12",
+      "name": "Chocolate Biscuits",
+      "category": "snacks",
+      "price": 40,
+      "image": "🍪",
+      "description": "Crispy chocolate biscuits",
+      "availability": true
+    },
+    {
+      "id": "13",
+      "name": "Potato Chips",
+      "category": "snacks",
+      "price": 30,
+      "image": "🍟",
+      "description": "Crispy potato chips",
+      "availability": true
+    },
+    {
+      "id": "14",
+      "name": "Popcorn",
+      "category": "snacks",
+      "price": 50,
+      "image": "🍿",
+      "description": "Fresh crunchy popcorn",
+      "availability": true
+    },
+    {
+      "id": "15",
+      "name": "Bread",
+      "category": "snacks",
+      "price": 50,
+      "image": "🍞",
+      "description": "Freshly baked bread",
+      "availability": true
+    },
+    {
+      "id": "XTRigHVln8k",
+      "name": "mango",
+      "category": "fruits",
+      "price": 100,
+      "image": "🥭",
+      "description": "yellowish",
+      "availability": true
+    },
+    {
+      "name": "kiwi",
+      "category": "fruits",
+      "price": 300,
+      "image": "🥝",
+      "description": "a good heathy fruit",
+      "availability": true,
+      "id": "2K74Ca41inM"
+    },
+    {
+      "id": "Y6U3chBMo4w",
+      "name": "SALTY BISCUITS",
+      "category": "snacks",
+      "price": 80,
+      "image": "🍪",
+      "description": "LESS CALORIES AND TASTY SNACK",
+      "availability": true
+    },
+    {
+      "id": "C9mFb_Xi95o",
+      "name": "grapes",
+      "category": "fruits",
+      "price": 100,
+      "image": "🍇",
+      "description": "so sweet",
+      "availability": true
+    }
+  ],
+  "orders": [
+    {
+      "orderId": "FC1791468440146",
+      "customerName": "GADHE MANIKANTA",
+      "phone": "07032555992",
+      "address": "5-19 PEDDA VEEDHI, MAHADEVIPURAM, Kothuru,Srikakulam, ANDHRA PRADESH, 532457",
+      "deliveryDate": "2026-10-16",
+      "paymentMethod": "cod",
+      "items": [
+        {
+          "id": 3,
+          "name": "Fresh Carrots",
+          "price": 60,
+          "quantity": 4
+        }
+      ],
+      "subtotal": 240,
+      "discount": 24,
+      "finalTotal": 216,
+      "status": "Delivered",
+      "orderDate": "08/10/2026, 19:37:20",
+      "id": "mF_Cwql-e1Q"
+    },
+    {
+      "orderId": "FC1791468986075",
+      "customerName": "raju",
+      "phone": "07032555992",
+      "address": "5-19 PEDDA VEEDHI, MAHADEVIPURAM, Kothuru,Srikakulam, ANDHRA PRADESH, 532457",
+      "deliveryDate": "2026-10-17",
+      "paymentMethod": "cod",
+      "items": [
+        {
+          "id": "2",
+          "name": "Fresh Bananas",
+          "price": 80,
+          "image": "🍌",
+          "quantity": 1
+        },
+        {
+          "id": "8",
+          "name": "Potatoes",
+          "price": 45,
+          "image": "🥔",
+          "quantity": 1
+        }
+      ],
+      "subtotal": 125,
+      "discount": 0,
+      "finalTotal": 125,
+      "status": "Preparing",
+      "orderDate": "08/10/2026, 19:46:26",
+      "id": "25iGOr1WLck"
+    },
+    {
+      "orderId": "FC1791521686939",
+      "customerName": "VENU GOPALA KRISHNA",
+      "phone": "7989626648",
+      "address": "PALASA",
+      "deliveryDate": "2026-10-10",
+      "paymentMethod": "upi",
+      "items": [
+        {
+          "id": "12",
+          "name": "Chocolate Biscuits",
+          "price": 40,
+          "image": "🍪",
+          "quantity": 1
+        },
+        {
+          "id": "5",
+          "name": "Fresh Carrots",
+          "price": 60,
+          "image": "🥕",
+          "quantity": 5
+        }
+      ],
+      "subtotal": 340,
+      "discount": 0,
+      "finalTotal": 340,
+      "status": "Delivered",
+      "orderDate": "9/10/2026, 10:24:46 am",
+      "id": "f2iMvKS6Ls4"
+    }
+  ],
+  "cart": [],
+  "discounts": [],
+  "$schema": "./node_modules/json-server/schema.json"
+}
