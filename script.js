@@ -1,6 +1,6 @@
 console.log("FreshCart JavaScript Started!");
 
-var API_URL = "http://localhost:5000/api/products";
+var API_URL = "https://freshcart-9oyu.onrender.com/api/products";
 
 var EXTERNAL_API_URL = "https://dummyjson.com/products/category/groceries";
 
