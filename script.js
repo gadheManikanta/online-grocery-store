@@ -920,3 +920,5 @@ window.getFreshCartExternalProducts = function () {
 console.log(
     "FreshCart Application Initialized Successfully!"
 );
+// Load products from MongoDB
+loadProducts();
